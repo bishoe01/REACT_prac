@@ -31,18 +31,19 @@ function App() {
           setLike(like_add);
         }}>👍</span>{like[i]}</h4>
         <p>7월10일</p>
+        <button onClick={() => {
+          let copy = [...글제목];
+          copy.splice(i,1);
+          setFirst(copy);  
+        }}>Delete</button>
       </div>)})}
 
         <input onChange={(e) => {
           setInputText(e.target.value);
           }}></input><button onClick={() => {
-            tmp = 글제목;
-            글제목 = [...tmp,inputtext];
-            console.log(글제목);
-            setFirst(글제목);
+            setFirst([inputtext,...글제목]);
           }}>Write</button>
-        
-
+      
       {!modal ? null : <Modal color={'skyblue'} ontitle={ontitle} setFirst={setFirst}/>}
     </div>
     
@@ -58,6 +59,8 @@ function Modal(props){
     <button>글수정</button>
 </div>
 )}
+
+
 
 
 export default App;
