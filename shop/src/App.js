@@ -2,7 +2,7 @@
 
 import logo from './logo.svg';
 import './App.css';
-import { Button , Container, Navbar, Nav} from 'react-bootstrap';
+import { Button , Container, Navbar, Nav, ModalTitle} from 'react-bootstrap';
 import { useState } from 'react';
 import data from './data';
 
@@ -25,22 +25,27 @@ function App() {
 
     <div className='container'>
       <div className='row'>
-        <div className='col-md-4'>
-          <img src='https://codingapple1.github.io/shop/shoes1.jpg' width="80%"/>
-          <h4>Description</h4>
-          <p>price</p>
-          </div>
-        <div className='col-md-4'><img src='https://codingapple1.github.io/shop/shoes2.jpg' width="80%"/>
-          <h4>Description</h4>
-          <p>price</p></div>
-        <div className='col-md-4'><img src='https://codingapple1.github.io/shop/shoes3.jpg' width="80%"/>
-          <h4>Description</h4>
-          <p>price</p></div>
-      </div>
+        {
+          shoes.map(function(a,i){
+            return(<Product img={`https://codingapple1.github.io/shop/shoes${i+1}.jpg`} title={shoes[i].title} price={shoes[i].price}></Product>)
+          })
+
+        }
+        </div>
     </div>
 
     </div>
   );
+}
+
+function Product(props){
+  return(
+    <div className='col-md-4'>
+          <img src={props.img} width="80%"/>
+          <h4>{props.title}</h4>
+          <p>{props.price}</p>
+          </div>
+  )
 }
 
 export default App;
