@@ -1,18 +1,28 @@
-/*eslint-disable*/
-import { useEffect, useState } from "react";
+
+import { useContext, useEffect, useState } from "react";
+import { Nav } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from 'styled-components';
-
+import { Context1 } from "../App";
+import { addCart} from "../store";
 
 
 function Detail(props){
+
+    let {backpack, shoes} = useContext(Context1);
+
     let [count, setCount] = useState(0);
     let [timesale,setTimesale] = useState(true);
     let [size,setSize] = useState("");
     let {id} = useParams();
+    let [tapnum, setTapNum] = useState(0);
+    let [fade2, setFade2] = useState("");
+    let dispatch = useDispatch();
     let findproduct = props.shoes.find(function(element){
         return element.id == id;
     });
+    let {cart} = useSelector((state) => {return state})
 
     useEffect(() => {
         let a = setTimeout(()=>{setTimesale(false)},2000)
@@ -22,12 +32,16 @@ function Detail(props){
     },[]);
 
     useEffect(() => {
-        isNaN(size) ? alert("Size must be a number") : null;
-    },[size]);
+        setFade2('end')
+        return () => {
+            setFade2('')
+        }
+    },[])
     
-
+    
     return(
-    <div className="container">
+    <div className={`container start ${fade2}`}>
+        
         {timesale ? <TimeSale/> : null}
         <div className="row">
             <div className="col-md-6">
@@ -40,17 +54,50 @@ function Detail(props){
                 placeholder="Only Number"
                 onChange={(e) => {
                     setSize(e.target.value);
-                    //isNaN(e.target.value) ? alert("경고  : 숫자만 입력하세요") : null 
                     }}>
                     </input>
                 <h4 className="pt-5">{findproduct.title}</h4>
                 <p>{findproduct.content}</p>
                 <p>{findproduct.price}won</p>
-                <button className="btn btn-danger">주문하기</button> 
+                <button onClick={() => {
+                    dispatch(addCart({id : 1, name : "RED NIT", count : 1}));
+                    }} className="btn btn-danger">주문하기</button> 
             </div>
         </div>
+        
+        <Nav variant="tabs"  defaultActiveKey="link0">
+            <Nav.Item>
+            <Nav.Link onClick={() => {setTapNum(0)}} eventKey="link0">버튼0</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+            <Nav.Link onClick={() => {setTapNum(1)}} eventKey="link1">버튼1</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+            <Nav.Link onClick={() => {setTapNum(2)}} eventKey="link2">버튼2</Nav.Link>
+            </Nav.Item>
+        </Nav>
+        
+        <TapContent tapnum={tapnum} ></TapContent>
+
+        
     </div> 
     )
+}
+
+
+function TapContent({tapnum}){
+    let {backpack, shoes} = useContext(Context1);
+    let [fade, setFade] =useState('');
+
+    useEffect(() => {
+        let a = setTimeout(() => {setFade("end")},100)
+        return () => {
+            setFade("");
+        }
+    },[tapnum])
+    return (<div className={`start ${fade}`}>
+    {[<div>{shoes[0].title}</div>,<div>1번내용</div>,<div>2번내용</div>][tapnum]}
+    </div>)
 }
 
 
@@ -58,6 +105,12 @@ function TimeSale(){
     return(
         <div className="alert alert-warning">
             2초이내 구매시 할인</div>
+    )
+}
+
+function TapUI(){
+    return(
+        <div></div>
     )
 }
 
