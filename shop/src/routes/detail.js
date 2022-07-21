@@ -38,6 +38,15 @@ function Detail(props){
         }
     },[])
     
+
+    useEffect(() => {
+        var tmp = localStorage.getItem("watched");
+        var tmp2 = JSON.parse(tmp);
+        tmp2.push(findproduct.id);
+        tmp2 = new Set(tmp2);
+        tmp2 = Array.from(tmp2);
+        localStorage.setItem("watched", JSON.stringify(tmp2));
+    },[]);
     
     return(
     <div className={`container start ${fade2}`}>

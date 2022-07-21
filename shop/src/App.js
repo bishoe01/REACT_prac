@@ -8,33 +8,42 @@ import data from './data';
 import {Routes,Route,Link, useNavigate, Outlet} from 'react-router-dom'
 import Detail from './routes/detail';
 import About from './routes/About';
+import Cart from './routes/Cart';
 import Event from './routes/Event';
 import axios from 'axios';
-import Cart from './routes/Cart';
+
+import { useQuery } from 'react-query';
 
 let WATCHED ='watched';
 
 export let Context1 = createContext()
 function App() {
   
-  let obj = {name : "bishoe01"};
-  
-
-
   let [shoes,setShoes] = useState(data);
   let navigate = useNavigate();
   let [count,setCount] = useState(0);
   let [dataurl ,setDataurl] = useState("https://codingapple1.github.io/shop/data2.json");
   let [backpack] = useState([10,20,30]);
+
+  
   useEffect(() => {
-    localStorage.setItem(WATCHED, JSON.stringify([]));
+    localStorage.getItem(WATCHED) == null
+    ?localStorage.setItem(WATCHED, JSON.stringify([]))
+    :console.log("");
   },[]);
 
   useEffect(() => {
           count == 1 ? setDataurl("https://codingapple1.github.io/shop/data3.json") : setDataurl("https://codingapple1.github.io/shop/data2.json");
   },[count]);
   
-  
+  let result = useQuery("name",() =>
+    axios.get("https://codingapple1.github.io/userdata.json").then((a)=>{
+      console.log("요청됨");
+      return a.data
+    }),
+    {staleTime:2000}
+    )  
+
 
   return (
     <div className="App">
@@ -47,11 +56,12 @@ function App() {
               <Nav.Link onClick={()=>{navigate('/detail/0'); setCurrentPage(true)}}>Detail</Nav.Link>
               <Nav.Link onClick={()=>{navigate('/cart')}}>About</Nav.Link>
               <Nav.Link onClick={()=>{navigate('/event')}}>Event</Nav.Link>
+              <Nav.Link onClick={()=>{navigate('/profile')}}>{result.isLoading ? "Loading..." : result.data.name}</Nav.Link>
             </Nav>
           </Container>
     </Navbar>
 
-
+    
     <Routes>
       <Route path="/" element={
         <>
@@ -111,10 +121,7 @@ function Product(props){
     <div className='col-md-4'>
           <img src={props.img} width="80%" onClick={() => {
             navigate(`/detail/${props.i}`);
-            var tmp = localStorage.getItem(WATCHED);
-            var tmp2 = JSON.parse(tmp);
-            tmp2.push(props.i);
-            localStorage.setItem(WATCHED, JSON.stringify(tmp2));
+            
             
             }}></img>
           <h4>{props.shoes.title}</h4>
